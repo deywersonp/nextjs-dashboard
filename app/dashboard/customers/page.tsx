@@ -3,10 +3,11 @@ import { Metadata } from 'next';
 
 import Search from '@/app/ui/search';
 import Table from '@/app/ui/customers/table';
+import Pagination from '@/app/ui/pagination';
 import { CustomersTableSkeleton } from '@/app/ui/skeletons';
 import { lusitana } from '@/app/ui/fonts';
 
-// import Pagination from '@/app/ui/invoices/pagination';
+import { fetchCustomersPages } from '@/app/lib/data';
 
 export const metadata: Metadata = {
   title: 'Customers',
@@ -21,8 +22,8 @@ export default async function Page(props: {
 
   const searchParams = await props.searchParams;
   const query = searchParams?.query || '';
-  // const currentPage = Number(searchParams?.page) || 1;
-  // const totalPages = await fetchInvoicesPages(query);
+  const currentPage = Number(searchParams?.page) || 1;
+  const totalPages = await fetchCustomersPages(query);
 
   return (
     <div className="w-full">
@@ -35,11 +36,11 @@ export default async function Page(props: {
         <Search placeholder="Search customers..." />
       </div>
       <Suspense key={query} fallback={<CustomersTableSkeleton />}>
-        <Table query={query} />
+        <Table query={query} currentPage={currentPage} />
       </Suspense>
-      {/* <div className="mt-5 flex w-full justify-center">
+      <div className="mt-5 flex w-full justify-center">
         <Pagination totalPages={totalPages} />
-      </div> */}
+      </div>
     </div>
   );
 }
